@@ -1,0 +1,14 @@
+<div class="resume-input-container">
+  <label for="resumeText">Enter Resume Text:</label>
+  <textarea id="resumeText"  [(ngModel)]="resumeText"  placeholder="Paste your resume here"></textarea>
+  <h3>OR</h3>
+  <label for="resumeFile">Upload Resume File:</label>
+  <input type="file" id="resumeFile" (change)="onFileChange($event)" accept=".txt,.docx,.pdf">
+
+  <button (click)="processResume()">Process Resume</button>
+
+  <div *ngIf="processedResume">
+    <h3>Processed Resume:</h3>
+    <pre>{{ processedResume }}</pre>
+  </div>
+</div>
