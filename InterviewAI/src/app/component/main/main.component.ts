@@ -23,11 +23,9 @@ export class MainComponent {
   }
 
   readResumeFile(file: File) {
-    const reader = new FileReader();
-    reader.readAsText(file);
-    reader.onload = (e) => {
-      this.processedResume = e.target?.result as string;
-    };
+   this.service.sendFile(file).subscribe((res: any)=> {
+    this.processedResume = res;
+   })
   }
 
   processResume() {

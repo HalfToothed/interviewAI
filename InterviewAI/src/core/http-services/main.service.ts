@@ -13,4 +13,8 @@ export class MainService {
   prompt(model : IResumeTextModel){
     return this.http.post("https://localhost:7059/Master/GenerateQuestions", model, {responseType : 'text'});
   }
+
+  sendFile(file : File){
+    return this.http.post("https://localhost:7059/Master/GetFile", file, {responseType : 'text'});
+  }
 }

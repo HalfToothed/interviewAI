@@ -1,3 +1,4 @@
+using DocumentFormat.OpenXml.Packaging;
 using InterviewAI.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -11,16 +12,47 @@ namespace InterviewAI.Api.Controllers
   {
         private readonly IMainManager _manager;
 
-    public MasterController(IMainManager manager)
-    {
+        public MasterController(IMainManager manager)
+        {
             _manager = manager;
-    }
+        }
 
-    [HttpPost("GenerateQuestions")]
-    public async Task<IActionResult> GenerateQuestions(Model text)
-    {
+        [HttpPost("GenerateQuestions")]
+        public async Task<IActionResult> GenerateQuestions(Model text)
+        {
             var result = await _manager.GenerateQuestions(text.Prompt);
             return Ok(result);
-    }
+        }
+
+        [HttpPost("GetFile")]
+        public async Task<IActionResult> GetFile(IFormFile file)
+        {
+
+            try
+            {
+                if (file == null || file.Length == 0)
+                {
+                    return BadRequest("Invalid file");
+                }
+
+                var result = "";
+
+                if (file.FileName.Contains(".pdf"))
+                {
+                     result = await _manager.ExtractFromPdf(file);
+                }
+                else
+                {
+                     result = await _manager.ExtractFromDocx(file);
+                }
+                
+                return Ok(result);
+               
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {e.Message}");
+            }
+        }
   }
 }

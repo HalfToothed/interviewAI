@@ -6,7 +6,7 @@ namespace InterviewAI.Services
 {
   public class PalmService : IPalmService
   {
-    public static string apiKey = "AIzaSyAS3A7M2L7bO9RwFfDEQAb8xW7CmYsMQ48";
+    public static string apiKey = "YOUR-API-KEY";
 
     public async Task<PalmTextCompletionResponse> GenerateQuestions(string prompt)
     {
