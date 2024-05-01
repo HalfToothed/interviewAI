@@ -34,7 +34,8 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Gemini-API-Key": "AIzaSyAS3A7M2L7bO9RwFfDEQAb8xW7CmYsMQ48"
       }
     }
   }

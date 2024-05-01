@@ -1,11 +1,9 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 using InterviewAI.Infrastructure;
-using iTextSharp.text.pdf;
-using iTextSharp.text.pdf.parser;
+using iText.Kernel.Pdf.Canvas.Parser;
+using iText.Kernel.Pdf;
 using Microsoft.AspNetCore.Http;
-using System.IO;
-using System.Reflection.PortableExecutable;
-using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace InterviewAI.Managers
 {
@@ -26,7 +24,7 @@ namespace InterviewAI.Managers
                 {
                     var body = doc.MainDocumentPart.Document.Body;
                     string documentText = body.InnerText;
-                    var result = await GenerateQuestions(documentText);
+                    var result = await GenerateQuestions(memoryStream);
                     return result;
                 }
             }
@@ -34,30 +32,42 @@ namespace InterviewAI.Managers
 
         public async Task<string> ExtractFromPdf(IFormFile file)
         {
-            using (var memoryStream = new MemoryStream())
+            if (file != null && file.ContentType.ToLower() == "application/pdf")
             {
-                await file.CopyToAsync(memoryStream);
-                memoryStream.Position = 0;
-                string text = string.Empty;
-                using (PdfReader reader = new PdfReader(memoryStream))
+                try
                 {
-                    for (int page = 1; page <= reader.NumberOfPages; page++)
+                    using (var reader = new PdfReader(file.OpenReadStream()))
                     {
-                        text += PdfTextExtractor.GetTextFromPage(reader, page);
+                        using (var document = new PdfDocument(reader))
+                        {
+                            var text = new StringBuilder();
+
+                            for (int page = 1; page <= document.GetNumberOfPages(); page++)
+                            {   
+                                text.Append(PdfTextExtractor.GetTextFromPage(document.GetPage(page)));
+                            }
+                            string extractedText = text.ToString();
+                          
+                            return extractedText;
+                        }
+                       
                     }
                 }
-
-                var result = await GenerateQuestions(text);
-                return result;
-
+                catch (Exception ex)
+                {
+                    return "Error occurred while reading PDF";
+                }
             }
-      
+            else
+            {
+                return "Invalid file. Please provide a PDF file.";
+            }
         }
 
 
-        public async Task<string> GenerateQuestions(string request)
+        public async Task<string> GenerateQuestions(MemoryStream request)
         { 
-            var head = "please generate ten interview questions that delve into the candidate's specific skills, experiences, and achievements. Based on this : ";
+            var head = "please Extract Usefult Information of the Candidate about Education, Experience, Work, Technology from this resume: ";
             var prompt = head +"\n"+ request;
             var resut = await _service.GenerateQuestions(prompt);
             var response = resut.Candidates.FirstOrDefault(x => !string.IsNullOrEmpty(x?.Output)).Output;

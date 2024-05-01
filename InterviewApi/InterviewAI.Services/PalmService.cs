@@ -6,7 +6,7 @@ namespace InterviewAI.Services
 {
   public class PalmService : IPalmService
   {
-    public static string apiKey = "YOUR-API-KEY";
+    public static string apiKey = Environment.GetEnvironmentVariable("Gemini-API-Key");
 
     public async Task<PalmTextCompletionResponse> GenerateQuestions(string prompt)
     {

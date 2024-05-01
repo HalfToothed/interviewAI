@@ -11,10 +11,12 @@ export class MainService {
   constructor(private http: HttpClient) { }
 
   prompt(model : IResumeTextModel){
-    return this.http.post("https://localhost:7059/Master/GenerateQuestions", model, {responseType : 'text'});
+    return this.http.post("https://localhost:44330/Master/GenerateQuestions", model, {responseType : 'text'});
   }
 
   sendFile(file : File){
-    return this.http.post("https://localhost:7059/Master/GetFile", file, {responseType : 'text'});
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post("https://localhost:44330/Master/GetFile", formData, {responseType : 'text'});
   }
 }
