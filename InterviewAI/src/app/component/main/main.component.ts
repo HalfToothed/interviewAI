@@ -10,37 +10,21 @@ import { IResumeTextModel } from 'src/core/models/main.model';
 })
 export class MainComponent {
 
-  resumeText: string = '';
   processedResume: string = '';
+  file: any;
 
   constructor(private service : MainService){}
 
   onFileChange(event: any) {
-    const file = event.target.files[0];
-    if (file) {
-      this.readResumeFile(file);
-    }
-  }
-
-  readResumeFile(file: File) {
-   this.service.sendFile(file).subscribe((res: any)=> {
-    this.processedResume = res;
-   })
+    this.file = event.target.files[0];
   }
 
   processResume() {
-    const model: IResumeTextModel = {
-      prompt: this.resumeText
-    };
-
-    this.service.prompt(model).subscribe((res: any) => {
-      console.log(res);
+    if(this.file)
+    {
+      this.service.sendFile(this.file).subscribe((res: any)=> {
         this.processedResume = res;
-      },
-      (error) => {
-        console.error('An error occurred:', error);
-      }
-    );
-
+       })
+    }
   }
 }

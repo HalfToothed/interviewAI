@@ -17,12 +17,6 @@ namespace InterviewAI.Api.Controllers
             _manager = manager;
         }
 
-      /*  [HttpPost("GenerateQuestions")]
-        public async Task<IActionResult> GenerateQuestions(Model text)
-        {
-            var result = await _manager.GenerateQuestions(text.Prompt);
-            return Ok(result);
-        }*/
 
         [HttpPost("GetFile")]
         public async Task<IActionResult> GetFile([FromForm] IFormFile file)

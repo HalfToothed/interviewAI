@@ -24,7 +24,7 @@ namespace InterviewAI.Managers
                 {
                     var body = doc.MainDocumentPart.Document.Body;
                     string documentText = body.InnerText;
-                    var result = await GenerateQuestions(memoryStream);
+                    var result = await GenerateQuestions(documentText);
                     return result;
                 }
             }
@@ -47,8 +47,9 @@ namespace InterviewAI.Managers
                                 text.Append(PdfTextExtractor.GetTextFromPage(document.GetPage(page)));
                             }
                             string extractedText = text.ToString();
-                          
-                            return extractedText;
+
+                            var response = await GenerateQuestions(extractedText);
+                            return response;
                         }
                        
                     }
@@ -65,12 +66,10 @@ namespace InterviewAI.Managers
         }
 
 
-        public async Task<string> GenerateQuestions(MemoryStream request)
-        { 
-            var head = "please Extract Usefult Information of the Candidate about Education, Experience, Work, Technology from this resume: ";
-            var prompt = head +"\n"+ request;
-            var resut = await _service.GenerateQuestions(prompt);
-            var response = resut.Candidates.FirstOrDefault(x => !string.IsNullOrEmpty(x?.Output)).Output;
+        public async Task<string> GenerateQuestions(string request)
+        {
+            var prompt = request  + "\n \n" + "this is a resume ask detailed interview questions only based on this resume";
+            var response = await _service.GenerateContent(prompt);
             return response;
         }
 

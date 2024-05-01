@@ -4,6 +4,6 @@ namespace InterviewAI.Infrastructure
 {
   public interface IPalmService
   {
-        Task<PalmTextCompletionResponse> GenerateQuestions(string prompt);
+        Task<string> GenerateContent(string prompt);
   }
 }
